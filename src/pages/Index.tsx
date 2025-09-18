@@ -6,8 +6,10 @@ import { SchemesPage } from "@/components/SchemesPage";
 import { AboutPage } from "@/components/AboutPage";
 import { SettingsPage } from "@/components/SettingsPage";
 import { ProfilePage } from "@/components/ProfilePage";
+import WeatherWidget from "../weather";
+import { RegisterPage } from "@/components/RegisterPage";
 
-type Page = 'welcome' | 'login' | 'dashboard' | 'schemes' | 'about' | 'settings' | 'profile';
+type Page = 'welcome' | 'login' | 'register' | 'dashboard' | 'schemes' | 'about' | 'settings' | 'profile' | 'weather';
 
 interface UserInfo {
   email: string;
@@ -29,10 +31,12 @@ const Index = () => {
   };
 
   const handleNavigate = (page: Page) => {
-    if (page === 'welcome') {
-      setUserInfo(null);
-    }
     setCurrentPage(page);
+  };
+
+  const handleLogout = () => {
+    setUserInfo(null);
+    setCurrentPage('welcome');
   };
 
   const renderPage = () => {
@@ -40,10 +44,24 @@ const Index = () => {
       case 'welcome':
         return <WelcomePage onGetStarted={handleGetStarted} />;
       case 'login':
-        return <LoginPage onLogin={handleLogin} />;
+        return <LoginPage 
+          onLogin={handleLogin} 
+          onRegister={() => setCurrentPage('register')}
+          onBack={() => setCurrentPage('welcome')}
+        />;
+      case 'register':
+        return <RegisterPage 
+          onRegister={handleLogin}
+          onLoginRedirect={() => setCurrentPage('login')}
+          onBack={() => setCurrentPage('welcome')}
+        />;
       case 'dashboard':
         return userInfo ? (
-          <Dashboard userInfo={userInfo} onNavigate={handleNavigate} />
+          <Dashboard 
+            userInfo={userInfo} 
+            onNavigate={handleNavigate} 
+            onLogout={handleLogout}
+          />
         ) : (
           <WelcomePage onGetStarted={handleGetStarted} />
         );
@@ -68,6 +86,12 @@ const Index = () => {
       case 'profile':
         return userInfo ? (
           <ProfilePage userInfo={userInfo} onNavigate={handleNavigate} />
+        ) : (
+          <WelcomePage onGetStarted={handleGetStarted} />
+        );
+      case 'weather':
+        return userInfo ? (
+          <WeatherWidget onNavigate={handleNavigate} />
         ) : (
           <WelcomePage onGetStarted={handleGetStarted} />
         );

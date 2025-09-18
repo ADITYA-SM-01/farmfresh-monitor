@@ -5,14 +5,15 @@ import {
   Info, 
   Settings, 
   User, 
-  LogOut, 
   Menu,
   X,
   Shield,
-  UserCircle
+  UserCircle,
+  CloudSun
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { LogoutDialog } from "./LogoutDialog";
 
 interface NavigationProps {
   userInfo: {
@@ -22,16 +23,18 @@ interface NavigationProps {
   };
   onNavigate: (page: string) => void;
   currentPage: string;
+  onLogout: () => void;
 }
 
-export const Navigation = ({ userInfo, onNavigate, currentPage }: NavigationProps) => {
+export const Navigation = ({ userInfo, onNavigate, currentPage, onLogout }: NavigationProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <Monitor className="w-5 h-5" /> },
+    { id: 'weather', label: 'Weather', icon: <CloudSun className="w-5 h-5" /> },
     { id: 'schemes', label: 'Schemes', icon: <Gift className="w-5 h-5" /> },
     { id: 'about', label: 'About', icon: <Info className="w-5 h-5" /> },
-    { id: 'profile', label: 'Profile', icon: <UserCircle className="w-5 h-5" /> },
+    // { id: 'profile', label: 'Profile', icon: <UserCircle className="w-5 h-5" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
   ];
 
@@ -82,19 +85,22 @@ export const Navigation = ({ userInfo, onNavigate, currentPage }: NavigationProp
               </Badge>
 
               {/* User Menu */}
-              <div className="flex items-center space-x-2">
+                <div 
+                className="flex items-center space-x-2 cursor-pointer"
+                onClick={() => onNavigate('profile')}
+                >
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
                 </div>
                 <div className="hidden md:block">
                   <p className="text-sm font-medium text-foreground">
-                    {userInfo.username}
+                  {userInfo.username}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {userInfo.email}
+                  {userInfo.email}
                   </p>
                 </div>
-              </div>
+                </div>
 
               {/* Mobile Menu Toggle */}
               <Button
@@ -107,14 +113,13 @@ export const Navigation = ({ userInfo, onNavigate, currentPage }: NavigationProp
               </Button>
 
               {/* Logout */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onNavigate('welcome')}
-                className="hidden lg:flex text-muted-foreground hover:text-destructive"
-              >
-                <LogOut className="w-4 h-4" />
-              </Button>
+              <div className="hidden lg:flex">
+                <LogoutDialog 
+                  onLogout={onLogout} 
+                  onNavigate={onNavigate}
+                  className="!size-sm !w-auto" 
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -137,7 +142,7 @@ export const Navigation = ({ userInfo, onNavigate, currentPage }: NavigationProp
               </div>
 
               {/* User Info */}
-              <div className="mb-8 p-4 bg-muted rounded-xl">
+              <div className="mb-8 p-4 bg-muted rounded-xl" onClick={()=> onNavigate('profile')}>
                 <div className="flex items-center space-x-3 mb-3">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
                     <User className="w-6 h-6 text-white" />
@@ -175,18 +180,16 @@ export const Navigation = ({ userInfo, onNavigate, currentPage }: NavigationProp
                 ))}
                 
                 {/* Logout */}
-                <Button
-                  variant="ghost"
-                  size="lg"
-                  onClick={() => {
-                    onNavigate('welcome');
+                <LogoutDialog 
+                  onLogout={() => {
+                    onLogout();
+                    setIsMenuOpen(false);
+                  }} 
+                  onNavigate={(page) => {
+                    onNavigate(page);
                     setIsMenuOpen(false);
                   }}
-                  className="w-full justify-start text-destructive hover:bg-destructive/10"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span className="ml-3">Logout</span>
-                </Button>
+                />
               </div>
             </div>
           </div>
