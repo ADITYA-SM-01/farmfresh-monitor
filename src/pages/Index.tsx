@@ -5,8 +5,9 @@ import { Dashboard } from "@/components/Dashboard";
 import { SchemesPage } from "@/components/SchemesPage";
 import { AboutPage } from "@/components/AboutPage";
 import { SettingsPage } from "@/components/SettingsPage";
+import { ProfilePage } from "@/components/ProfilePage";
 
-type Page = 'welcome' | 'login' | 'dashboard' | 'schemes' | 'about' | 'settings';
+type Page = 'welcome' | 'login' | 'dashboard' | 'schemes' | 'about' | 'settings' | 'profile';
 
 interface UserInfo {
   email: string;
@@ -61,6 +62,12 @@ const Index = () => {
       case 'settings':
         return userInfo ? (
           <SettingsPage userInfo={userInfo} onNavigate={handleNavigate} />
+        ) : (
+          <WelcomePage onGetStarted={handleGetStarted} />
+        );
+      case 'profile':
+        return userInfo ? (
+          <ProfilePage userInfo={userInfo} onNavigate={handleNavigate} />
         ) : (
           <WelcomePage onGetStarted={handleGetStarted} />
         );

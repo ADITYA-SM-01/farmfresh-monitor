@@ -103,14 +103,46 @@ export const Dashboard = ({ userInfo, onNavigate }: DashboardProps) => {
     }
   ]);
 
-  // Simulate live data updates
+  // Define parameter thresholds
+  const thresholds = {
+    temperature: { min: 8, max: 18 },
+    humidity: { min: 60, max: 80 },
+    vibration: { min: 0, max: 0.05 },
+    light: { min: 0, max: 200 },
+    ammonia: { min: 0, max: 5 },
+    co2: { min: 300, max: 500 }
+  };
+
+  // Check if parameter is out of threshold
+  const isOutOfThreshold = (param: Parameter) => {
+    const threshold = thresholds[param.id as keyof typeof thresholds];
+    return param.value < threshold.min || param.value > threshold.max;
+  };
+
+  // Simulate live data updates with threshold checking
   useEffect(() => {
     const interval = setInterval(() => {
-      setParameters(prev => prev.map(param => ({
-        ...param,
-        value: param.value + (Math.random() - 0.5) * 2,
-        trend: Math.random() > 0.7 ? (Math.random() > 0.5 ? 'up' : 'down') : param.trend
-      })));
+      setParameters(prev => prev.map(param => {
+        const newValue = param.value + (Math.random() - 0.5) * 4; // More variation for demo
+        const threshold = thresholds[param.id as keyof typeof thresholds];
+        
+        let newStatus: 'good' | 'warning' | 'critical' = 'good';
+        if (newValue < threshold.min || newValue > threshold.max) {
+          newStatus = 'critical';
+        } else if (
+          newValue < threshold.min + (threshold.max - threshold.min) * 0.1 || 
+          newValue > threshold.max - (threshold.max - threshold.min) * 0.1
+        ) {
+          newStatus = 'warning';
+        }
+
+        return {
+          ...param,
+          value: Math.max(0, newValue),
+          status: newStatus,
+          trend: Math.random() > 0.7 ? (Math.random() > 0.5 ? 'up' : 'down') : param.trend
+        };
+      }));
     }, 5000);
 
     return () => clearInterval(interval);
@@ -169,7 +201,9 @@ export const Dashboard = ({ userInfo, onNavigate }: DashboardProps) => {
           {parameters.map((param) => (
             <Card
               key={param.id}
-              className={`parameter-card ${selectedParameter === param.id ? 'ring-2 ring-primary shadow-strong' : ''}`}
+              className={`parameter-card ${selectedParameter === param.id ? 'ring-2 ring-primary shadow-strong' : ''} ${
+                param.status === 'critical' ? 'critical' : ''
+              } ${isOutOfThreshold(param) ? 'danger-alert' : ''}`}
               onClick={() => setSelectedParameter(selectedParameter === param.id ? null : param.id)}
             >
               <CardHeader className="pb-3">

@@ -8,7 +8,8 @@ import {
   LogOut, 
   Menu,
   X,
-  Shield
+  Shield,
+  UserCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +31,7 @@ export const Navigation = ({ userInfo, onNavigate, currentPage }: NavigationProp
     { id: 'dashboard', label: 'Dashboard', icon: <Monitor className="w-5 h-5" /> },
     { id: 'schemes', label: 'Schemes', icon: <Gift className="w-5 h-5" /> },
     { id: 'about', label: 'About', icon: <Info className="w-5 h-5" /> },
+    { id: 'profile', label: 'Profile', icon: <UserCircle className="w-5 h-5" /> },
     { id: 'settings', label: 'Settings', icon: <Settings className="w-5 h-5" /> },
   ];
 
