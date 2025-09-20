@@ -98,7 +98,8 @@ export const ProfilePage = ({ userInfo, onNavigate }: ProfilePageProps) => {
       <Navigation 
         userInfo={userInfo} 
         onNavigate={onNavigate} 
-        currentPage="profile" 
+        currentPage="profile"
+        onLogout={() => onNavigate('welcome')}
       />
 
       <div className="container mx-auto px-6 py-8">

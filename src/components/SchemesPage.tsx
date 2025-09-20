@@ -123,7 +123,8 @@ export const SchemesPage = ({ userInfo, onNavigate }: SchemesPageProps) => {
       <Navigation 
         userInfo={userInfo} 
         onNavigate={onNavigate} 
-        currentPage="schemes" 
+        currentPage="schemes"
+        onLogout={() => onNavigate('welcome')}
       />
 
       <div className="container mx-auto px-6 py-8">

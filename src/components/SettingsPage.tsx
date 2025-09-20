@@ -90,7 +90,8 @@ export const SettingsPage = ({ userInfo, onNavigate }: SettingsPageProps) => {
       <Navigation 
         userInfo={userInfo} 
         onNavigate={onNavigate} 
-        currentPage="settings" 
+        currentPage="settings"
+        onLogout={() => onNavigate('welcome')}
       />
 
       <div className="container mx-auto px-6 py-8">
